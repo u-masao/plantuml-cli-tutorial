@@ -2,13 +2,13 @@
 PNGDIR := build
 UMLDIR := docs
 UMLS := $(wildcard $(UMLDIR)/*.uml)
-PNGS := $(addprefix $(PNGDIR)/,$(patsubst %.uml,%.png,$(UMLS)))
+PNGS := $(addprefix $(PNGDIR)/,$(patsubst %.uml,%.png,$(subst $(UMLDIR)/,,$(UMLS))))
 
 
 .PHONY: all
 all: $(PNGS)
 
-$(PNGDIR)/%.png:%.uml
+$(PNGDIR)/%.png:$(UMLDIR)/%.uml
 	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
 	java -jar jar/plantuml.jar -tpng -o ../build -c $<
 
@@ -17,3 +17,5 @@ environment:
 	wget https://sourceforge.net/projects/plantuml/files/plantuml.jar/download \
         -O jar/plantuml.jar 
 
+clean:
+	rm -f $(PNGDIR)/*.png
